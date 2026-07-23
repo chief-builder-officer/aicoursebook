@@ -1,0 +1,896 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --paper:#EEF0EA;
+  --paper-raised:#F7F8F3;
+  --ink:#1B2116;
+  --ink-soft:#565F4F;
+  --ink-faint:#8A9280;
+  --line:#D6D9CC;
+  --edge:#3F7D6E;
+  --edge-soft:#DCEBE6;
+  --gold:#C68A2E;
+  --gold-soft:#F3E3C6;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Source Sans 3',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;}
+.acb-app{font-family:var(--sans);color:var(--ink);background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;}
+.acb-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1.25rem;
+  background:var(--paper-raised);border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.acb-topbar-brand{font-family:var(--serif);font-weight:600;font-size:1rem;color:var(--ink);white-space:nowrap;}
+.acb-toplinks{display:flex;gap:.4rem;flex-wrap:wrap;}
+.acb-toplink{font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--ink-soft);
+  background:none;border:1px solid transparent;border-radius:7px;padding:.42rem .8rem;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;}
+.acb-toplink:hover{color:var(--ink);border-color:var(--line);}
+.acb-toplink.active{background:var(--edge);color:#fff;}
+.acb-wrap{display:grid;grid-template-columns:280px 1fr;gap:0;height:640px;}
+@media (max-width:820px){.acb-wrap{grid-template-columns:1fr;height:auto;}}
+.acb-side{background:var(--paper-raised);border-right:1px solid var(--line);
+  padding:1.5rem 1.25rem;display:flex;flex-direction:column;gap:1.25rem;height:100%;overflow-y:auto;}
+@media (max-width:820px){.acb-side{border-right:none;border-bottom:1px solid var(--line);height:auto;max-height:320px;}}
+.acb-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--edge);}
+.acb-title{font-family:var(--serif);font-weight:500;font-size:1.3rem;line-height:1.25;margin:.35rem 0 0;}
+.acb-progress-row{display:flex;align-items:center;gap:.6rem;}
+.acb-ring{flex:none;}
+.acb-progress-text{font-size:.82rem;color:var(--ink-soft);}
+.acb-progress-text b{font-family:var(--mono);color:var(--ink);font-weight:500;}
+.acb-track{position:relative;flex:1;}
+.acb-nav-group{list-style:none;font-family:var(--mono);font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--gold);padding:1.1rem 0 .5rem 0;border-top:1px solid var(--line);margin-top:.2rem;}
+.acb-nav-group:first-child{border-top:none;margin-top:0;padding-top:0;}
+.acb-content-divider{display:flex;align-items:center;gap:.7rem;margin:1.6rem 0 .9rem;}
+.acb-content-divider:first-child{margin-top:0;}
+.acb-content-divider-line{flex:1;height:1px;background:var(--line);}
+.acb-content-divider-text{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--gold);white-space:nowrap;}
+.acb-nav{list-style:none;margin:0;padding:0;position:relative;}
+.acb-nav-item{position:relative;padding-left:28px;padding-bottom:16px;}
+.acb-nav-item:last-child{padding-bottom:0;}
+.acb-nav-item::before{content:'';position:absolute;left:9px;top:20px;bottom:-4px;width:1.5px;background:var(--line);}
+.acb-nav-item:last-child::before{display:none;}
+.acb-node{position:absolute;left:0;top:2px;width:19px;height:19px;border-radius:50%;
+  background:var(--paper-raised);border:1.5px solid var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;}
+.acb-node svg{width:10px;height:10px;opacity:0;transition:opacity .15s;}
+.acb-nav-item.done .acb-node{background:var(--edge);border-color:var(--edge);}
+.acb-nav-item.done .acb-node svg{opacity:1;}
+.acb-nav-item.active .acb-node{border-color:var(--gold);border-width:2px;}
+.acb-nav-btn{background:none;border:none;padding:0;text-align:left;cursor:pointer;font-family:var(--sans);width:100%;}
+.acb-nav-label{font-size:.86rem;color:var(--ink-soft);line-height:1.3;transition:color .15s;}
+.acb-nav-item.active .acb-nav-label{color:var(--ink);font-weight:600;}
+.acb-nav-item.done .acb-nav-label{color:var(--ink);}
+.acb-nav-num{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);display:block;margin-bottom:1px;}
+.acb-reset{margin-top:auto;font-family:var(--sans);font-size:.78rem;color:var(--ink-faint);
+  background:none;border:1px solid var(--line);border-radius:7px;padding:.5rem .7rem;cursor:pointer;
+  text-align:left;transition:border-color .15s,color .15s;}
+.acb-reset:hover{border-color:var(--ink-faint);color:var(--ink-soft);}
+
+.acb-main{padding:1.75rem 2rem 2.5rem;height:100%;overflow-y:auto;}
+@media (max-width:820px){.acb-main{padding:1.5rem 1.25rem 2rem;height:auto;overflow-y:visible;}}
+.acb-module{border:1px solid var(--line);border-radius:12px;background:var(--paper-raised);
+  margin-bottom:1rem;overflow:hidden;scroll-margin-top:1rem;}
+.acb-module[open]{border-color:var(--edge);}
+.acb-module summary{list-style:none;cursor:pointer;padding:1rem 1.15rem;display:flex;gap:.85rem;align-items:flex-start;}
+.acb-module summary::-webkit-details-marker{display:none;}
+.acb-chevron{flex:none;width:16px;height:16px;margin-top:5px;color:var(--ink-faint);transition:transform .15s;}
+.acb-module[open] .acb-chevron{transform:rotate(90deg);color:var(--edge);}
+.acb-summary-text{flex:1;}
+.acb-module-tag{font-family:var(--mono);font-size:.7rem;color:var(--edge);text-transform:uppercase;letter-spacing:.06em;}
+.acb-module-title{font-family:var(--serif);font-size:1.12rem;font-weight:500;margin:.15rem 0 0;}
+.acb-module-skill{font-size:.83rem;color:var(--ink-soft);margin-top:.25rem;}
+.acb-checkbox-wrap{flex:none;display:flex;align-items:center;gap:.4rem;padding-top:.15rem;}
+.acb-checkbox-label{font-size:.72rem;color:var(--ink-faint);font-family:var(--mono);}
+.acb-checkbox{appearance:none;width:19px;height:19px;border-radius:5px;border:1.5px solid var(--ink-faint);
+  background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+.acb-checkbox:checked{background:var(--edge);border-color:var(--edge);}
+.acb-checkbox:checked::after{content:'';width:9px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translate(1px,-1px);}
+.acb-body{padding:0 1.15rem 1.25rem 2.65rem;font-size:.94rem;line-height:1.65;color:var(--ink);}
+.acb-body p{margin:0 0 .85rem;}
+.acb-body h4{font-family:var(--serif);font-size:.98rem;font-weight:600;margin:1.1rem 0 .4rem;}
+.acb-body ul,.acb-body ol{margin:0 0 .85rem;padding-left:1.2rem;}
+.acb-body li{margin-bottom:.4rem;}
+.acb-body code{font-family:var(--mono);font-size:.82em;background:var(--edge-soft);color:#245448;
+  padding:.1em .35em;border-radius:4px;}
+.acb-body pre{background:#20261B;color:#E4E8DC;font-family:var(--mono);font-size:.8rem;padding:.85rem 1rem;
+  border-radius:8px;overflow-x:auto;margin:0 0 .85rem;line-height:1.55;}
+.acb-body pre code{background:none;color:inherit;padding:0;}
+.acb-table{width:100%;border-collapse:collapse;margin:0 0 .95rem;font-size:.88rem;}
+.acb-table th,.acb-table td{text-align:left;padding:.5rem .65rem;border-bottom:1px solid var(--line);vertical-align:top;}
+.acb-table th{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);}
+.acb-callout{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+  padding:.75rem .95rem;margin:0 0 .85rem;font-size:.9rem;}
+.acb-callout b{color:#7A5310;}
+.acb-checkpoint{background:var(--edge-soft);border-radius:8px;padding:.75rem .95rem;margin-top:.3rem;font-size:.87rem;}
+.acb-checkpoint .acb-cp-label{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--edge);display:block;margin-bottom:.25rem;}
+.acb-worked{background:#FBF6EA;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+  padding:.85rem 1rem;margin-top:.65rem;font-size:.89rem;line-height:1.62;}
+.acb-worked-label{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+  color:#9C6B1F;display:block;margin-bottom:.4rem;}
+.acb-worked p{margin:0 0 .7rem;}
+.acb-worked p:last-child{margin-bottom:0;}
+.acb-worked ul,.acb-worked ol{margin:0 0 .7rem;padding-left:1.15rem;}
+.acb-worked li{margin-bottom:.3rem;}
+.acb-worked b{color:#2B2620;}
+.acb-glossary-term{font-family:var(--mono);font-weight:500;color:var(--edge);}
+.acb-toast{position:sticky;top:0;z-index:5;text-align:center;font-size:.78rem;color:var(--ink-faint);
+  padding:.3rem 0;font-family:var(--mono);}
+
+.acb-quiz-intro{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1rem;}
+.acb-quiz-intro h3{font-family:var(--serif);font-size:1.15rem;margin:0 0 .4rem;}
+.acb-quiz-intro p{margin:0 0 .3rem;font-size:.88rem;color:var(--ink-soft);}
+.acb-result-banner{border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.1rem;font-size:.92rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.acb-result-banner.pass{background:var(--edge-soft);border:1px solid var(--edge);}
+.acb-result-banner.fail{background:#F7DCD4;border:1px solid #C0492E;}
+.acb-result-score{font-family:var(--mono);font-weight:600;font-size:1rem;}
+.acb-result-banner.pass .acb-result-score{color:var(--edge);}
+.acb-result-banner.fail .acb-result-score{color:#B03D24;}
+.acb-qcard{border:1px solid var(--line);border-radius:12px;background:var(--paper-raised);
+  padding:1rem 1.15rem;margin-bottom:.85rem;scroll-margin-top:1rem;}
+.acb-qcard-num{font-family:var(--mono);font-size:.72rem;color:var(--edge);text-transform:uppercase;letter-spacing:.05em;}
+.acb-qcard-text{font-family:var(--serif);font-size:1rem;font-weight:500;margin:.3rem 0 .75rem;}
+.acb-qoptions{display:flex;flex-direction:column;gap:.5rem;}
+.acb-qoption{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:8px;border:1px solid var(--line);
+  cursor:pointer;font-size:.88rem;transition:border-color .15s,background .15s;}
+.acb-qoption:hover{border-color:var(--ink-faint);}
+.acb-qoption input{accent-color:var(--edge);flex:none;}
+.acb-qoption.correct{border-color:var(--edge);background:var(--edge-soft);}
+.acb-qoption.incorrect{border-color:#C0492E;background:#F7DCD4;}
+.acb-qoption.disabled{cursor:default;}
+.acb-qoption-tag{margin-left:auto;font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;}
+.acb-qoption.correct .acb-qoption-tag{color:var(--edge);}
+.acb-qoption.incorrect .acb-qoption-tag{color:#B03D24;}
+.acb-qsubmit-row{position:sticky;bottom:-2.5rem;background:linear-gradient(to top, var(--paper) 55%, transparent);
+  padding:1rem 0 .3rem;margin-top:-.5rem;}
+.acb-qsubmit{font-family:var(--sans);font-weight:600;font-size:.92rem;color:#fff;background:var(--edge);
+  border:none;border-radius:8px;padding:.7rem 1.4rem;cursor:pointer;transition:opacity .15s;}
+.acb-qsubmit:disabled{opacity:.4;cursor:not-allowed;}
+.acb-qretake{font-family:var(--sans);font-weight:600;font-size:.85rem;color:var(--ink);background:var(--paper);
+  border:1px solid var(--ink-faint);border-radius:8px;padding:.55rem 1.1rem;cursor:pointer;}
+.acb-qsubmit-hint{font-size:.78rem;color:var(--ink-faint);margin-top:.5rem;font-family:var(--mono);}
+.acb-quiz-summary{font-size:.82rem;color:var(--ink-soft);line-height:1.5;}
+.acb-quiz-summary b{font-family:var(--mono);color:var(--ink);}
+.acb-qnav{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.05rem;}
+.acb-qnav-item{display:block;}
+.acb-qnav-btn{display:flex;align-items:center;gap:.55rem;width:100%;background:none;border:none;
+  padding:.4rem 0;font-family:var(--sans);font-size:.83rem;color:var(--ink-soft);cursor:pointer;text-align:left;}
+.acb-qnav-btn:hover{color:var(--ink);}
+.acb-qnav-dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none;}
+.acb-qnav-dot.answered{background:var(--gold);}
+.acb-qnav-dot.correct{background:var(--edge);}
+.acb-qnav-dot.incorrect{background:#C0492E;}
+</style>
+
+<div class="acb-app">
+  <header class="acb-topbar">
+    <div class="acb-topbar-brand">AI Fluency Coursebook</div>
+    <nav class="acb-toplinks" id="acb-toplinks">
+      <button class="acb-toplink" data-view="part1">Part 1</button>
+      <button class="acb-toplink" data-view="part2">Part 2</button>
+      <button class="acb-toplink" data-view="quiz1">Quiz &middot; Part 1</button>
+      <button class="acb-toplink" data-view="quiz2">Quiz &middot; Part 2</button>
+    </nav>
+  </header>
+  <div class="acb-wrap">
+    <aside class="acb-side" id="acb-side"></aside>
+    <main class="acb-main" id="acb-main"></main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var modules = [
+    {id:'m0', group:'part1', num:'0', tag:'mental model', title:'The mental model', skill:'The one picture to hold in your head for every module below.',
+      body: '<p>Every AI system, regardless of industry, has three layers. Learn to spot which layer a piece of technology belongs to \u2014 it\u2019s the fastest way to tell real AI transformation from a UI facelift.</p>'
+      + '<table class="acb-table"><tr><th>Layer</th><th>Question it answers</th><th>Example</th></tr>'
+      + '<tr><td><b>Interface</b></td><td>How does a human interact with it?</td><td>Chatbot, voice assistant, dashboard</td></tr>'
+      + '<tr><td><b>Reasoning</b></td><td>How does it decide what to say or do?</td><td>The model itself (ML model, LLM)</td></tr>'
+      + '<tr><td><b>Context</b></td><td>What does it actually know about this specific situation?</td><td>Your data, your entities, your relationships</td></tr></table>'
+      + '<p>A huge share of "AI projects" only touch the Interface layer \u2014 a chat UI sitting on the same old database, same old logic. Real capability upgrades happen in the Context and Reasoning layers.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>You should be able to look at any "AI feature" \u2014 in any product, any industry \u2014 and say which layer(s) it actually touches.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Take a real one: a bank\u2019s mobile app rolls out "Ask AI," a chat button that answers questions like "what\u2019s an overdraft fee" using the bank\u2019s public FAQ page.</p>'
+      + '<p><b>Interface:</b> yes, clearly \u2014 it\u2019s a new chat window replacing a search box.</p>'
+      + '<p><b>Reasoning:</b> partially \u2014 an LLM is generating the phrasing, deciding how to summarize the FAQ answer.</p>'
+      + '<p><b>Context:</b> barely \u2014 it isn\u2019t pulling the asker\u2019s actual account, their recent overdraft, or their fee history. It\u2019s reading the same static page any visitor could read.</p>'
+      + '<p>So the honest answer: this feature upgrades Interface, touches Reasoning lightly, and does almost nothing in Context. That\u2019s the tell. If it can\u2019t answer "did <i>I</i> get charged an overdraft fee last month," it hasn\u2019t actually gotten smarter about you \u2014 it\u2019s just a nicer-looking FAQ.</p>'
+      + '<p>Now try it on something you\u2019ve actually used: an AI email summarizer, a "recommended for you" feed, a support chatbot. Same three questions, same test.</p></div>'},
+
+    {id:'m1', group:'part1', num:'1', tag:'foundations', title:'Machine learning fundamentals', skill:'Distinguishing rule-based software from learned systems, and the core vocabulary.',
+      body: '<p>Traditional software: a human writes explicit rules.</p>'
+      + '<pre><code>IF condition THEN action</code></pre>'
+      + '<p>Machine learning: you show the system many examples, and it infers the rule itself.</p>'
+      + '<pre><code>Input: thousands of past examples (inputs \u2192 known outcomes)\nProcess: the system finds the pattern\nOutput: a model that predicts outcomes for new, unseen inputs</code></pre>'
+      + '<h4>Three types of learning \u2014 know these cold</h4>'
+      + '<ul><li><b>Supervised learning</b> \u2014 learns from labeled examples ("this was fraud", "this customer churned"). Most classic business ML is this.</li>'
+      + '<li><b>Unsupervised learning</b> \u2014 no labels; the system finds structure on its own (e.g. clustering similar entities into groups nobody predefined).</li>'
+      + '<li><b>Reinforcement learning</b> \u2014 learns by trial, error, and reward. Used in recommendation ranking, robotics, and how modern LLMs get fine-tuned for helpfulness (RLHF).</li></ul>'
+      + '<h4>Core vocabulary</h4>'
+      + '<ul><li><span class="acb-glossary-term">Feature</span> \u2014 an input variable the model learns from.</li>'
+      + '<li><span class="acb-glossary-term">Model</span> \u2014 the trained pattern-recognizer (a file of learned weights).</li>'
+      + '<li><span class="acb-glossary-term">Training vs. inference</span> \u2014 training = teaching the model (slow, periodic). Inference = the model making a live prediction (fast, constant).</li>'
+      + '<li><span class="acb-glossary-term">Embedding</span> \u2014 the most important concept in this coursebook. A way of converting anything (text, an image, a customer) into a list of numbers such that similar things get similar numbers. Every later module depends on this.</li></ul>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Exercise</span>Pick any prediction problem in your daily life or work and identify: what would the features be, and is it supervised or unsupervised?</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Problem: predicting whether an email you just received will need a follow-up reply within 48 hours.</p>'
+      + '<p><b>Step 1 \u2014 do we have labels?</b> Yes: your own inbox already has the "ground truth" \u2014 emails you eventually replied to within 48 hours (label = 1) versus ones you didn\u2019t (label = 0). That alone tells you this is <b>supervised learning</b>, not unsupervised.</p>'
+      + '<p><b>Step 2 \u2014 what would the features be?</b> Pull out signals from each email that a human would unconsciously use to judge urgency:</p>'
+      + '<ul><li>Sender\u2019s seniority or how often you reply to them normally</li>'
+      + '<li>Whether the subject or body contains a question mark</li>'
+      + '<li>Thread length (a 6-message back-and-forth signals something unresolved)</li>'
+      + '<li>Time of day received (late-night emails from your manager hit differently than a newsletter)</li></ul>'
+      + '<p><b>Step 3 \u2014 the actual model:</b> feed thousands of past emails (features + label) in, and the model learns the pattern \u2014 you never wrote an explicit rule like "if sender is manager AND has question mark THEN urgent."</p>'
+      + '<p>Try the same three steps on something in your own week: which meetings tend to get rescheduled, which support tickets escalate, which vendors pay late.</p></div>'},
+
+    {id:'m2', group:'part1', num:'2', tag:'foundations', title:'Feature engineering', skill:'Recognizing the difference between raw data and usable signal.',
+      body: '<p>Raw data is rarely directly useful to a model. Feature engineering is the work of transforming raw data into meaningful inputs.</p>'
+      + '<table class="acb-table"><tr><th>Raw data</th><th>Engineered feature</th></tr>'
+      + '<tr><td>Timestamps of every event</td><td>Average time between events</td></tr>'
+      + '<tr><td>List of items used</td><td>Usage breadth ratio (used \u00f7 available)</td></tr>'
+      + '<tr><td>Free-text notes/logs</td><td>Sentiment score</td></tr>'
+      + '<tr><td>A category code</td><td>Volatility index for that category (joined from an external source)</td></tr></table>'
+      + '<p>This is unglamorous, high-leverage work \u2014 arguably the most underrated skill in applied ML, since a mediocre model with great features usually beats a great model with poor features.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given a raw dataset in any domain, you should be able to propose 3\u20135 engineered features that a raw column list wouldn\u2019t reveal.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Raw dataset: a ride-hailing app\u2019s trip logs \u2014 pickup timestamp, dropoff timestamp, pickup GPS, dropoff GPS, fare, driver ID. Goal: predict which trips are likely to get a low rating.</p>'
+      + '<p>None of those raw columns predict "bad trip" on their own. Here\u2019s how you\u2019d engineer 5 features from them:</p>'
+      + '<ul><li><b>Trip duration</b> \u2014 dropoff minus pickup timestamp (raw timestamps alone say nothing; the gap does)</li>'
+      + '<li><b>Route efficiency</b> \u2014 actual distance traveled vs. straight-line distance between pickup and dropoff GPS (a big gap suggests a bad route or detour)</li>'
+      + '<li><b>Time-of-day risk band</b> \u2014 late night / rush hour / midday, derived from the timestamp, since ratings skew differently by time</li>'
+      + '<li><b>Driver\u2019s recent trip count</b> \u2014 how many trips this driver ID completed in the last 7 days (a proxy for fatigue or overwork)</li>'
+      + '<li><b>Pickup zone volatility</b> \u2014 how often trips from this GPS cluster historically get low ratings (joined in from aggregated history)</li></ul>'
+      + '<p>Notice the pattern: every feature combines two or more raw columns, or joins in outside history. That combining step is the actual engineering \u2014 it\u2019s never just renaming a column.</p></div>'},
+
+    {id:'m3', group:'part1', num:'3', tag:'foundations', title:'Data architecture: data fabric', skill:'How organizations make fragmented data usable for AI \u2014 and the tradeoffs between approaches.',
+      body: '<p>Most organizations have data scattered across many systems, with no single source of truth. Three architectural patterns handle this:</p>'
+      + '<ul><li><b>Data warehouse</b> \u2014 structured data copied and transformed into one central store, optimized for reporting/BI.</li>'
+      + '<li><b>Data lake</b> \u2014 raw data of any type dumped into cheap storage, transformed later as needed.</li>'
+      + '<li><b>Data fabric</b> \u2014 instead of copying everything into one place first, a metadata-driven layer sits across all source systems and provides unified, governed, near-real-time access to data wherever it lives.</li></ul>'
+      + '<div class="acb-callout"><b>Why it matters for AI:</b> a model or agent often needs live, cross-system context at the moment of a decision \u2014 not last quarter\u2019s copied snapshot. Data fabric is the architectural answer to giving AI live access to everything without rebuilding every integration pipeline by hand.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given a scenario with several disconnected systems needing a unified AI assistant, you should be able to explain why a warehouse-only approach falls short.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Scenario: an online retailer wants an AI assistant that can answer "is this customer\u2019s order at risk of a late delivery?" It needs data from 6 systems: inventory, order management, shipping/logistics, CRM, support tickets, and the marketing platform.</p>'
+      + '<p><b>Why a warehouse-only approach falls short:</b> a data warehouse typically refreshes on a schedule \u2014 say, a nightly batch job that copies yesterday\u2019s data from all 6 systems into one place. That\u2019s fine for a monthly sales report. It\u2019s useless for this question, because:</p>'
+      + '<ul><li>The shipping carrier\u2019s delay alert came in 20 minutes ago \u2014 today\u2019s data, not last night\u2019s copy</li>'
+      + '<li>The support ticket the customer just filed hasn\u2019t been batch-loaded yet</li>'
+      + '<li>By the time the warehouse refreshes, the "risk" window may have already passed</li></ul>'
+      + '<p><b>Where a fabric-style approach helps:</b> instead of waiting for a nightly copy, the assistant reaches into all 6 systems live, at the moment someone asks \u2014 today\u2019s shipping status, this morning\u2019s inventory count, the ticket filed 20 minutes ago \u2014 without anyone having built 6 separate real-time pipelines by hand.</p>'
+      + '<p>The general test: if the value of the answer decays within hours, a warehouse\u2019s batch cadence is the wrong architecture, no matter how well-organized the warehouse is.</p></div>'},
+
+    {id:'m4', group:'part1', num:'4', tag:'context', title:'Knowledge graphs, ontologies & semantic models', skill:'Structuring data by relationships, not just rows \u2014 the foundation for real reasoning.',
+      body: '<p>A relational database stores data in tables. Answering a relational question ("who is connected to whom, through what, and how many steps away") requires complex joins that get harder as the question gets more relational.</p>'
+      + '<p>A <b>knowledge graph</b> stores data as entities (nodes) and relationships (edges) instead:</p>'
+      + '<pre><code>[Entity A] --relationship--> [Entity B] --relationship--> [Entity C]</code></pre>'
+      + '<p>Once data is structured this way, multi-hop relational questions become a graph traversal instead of a nightmare of joins.</p>'
+      + '<h4>Ontology</h4><p>Before building the graph, you define what kinds of entities and relationships are allowed to exist \u2014 the schema/vocabulary. Industry-standard ontologies exist for many domains (banking has BIAN, healthcare has FHIR, e-commerce has schema.org) \u2014 using a standard vocabulary saves years of rework.</p>'
+      + '<h4>Semantic model</h4><p>Ensures a term ("Customer", "Order", "Account") means the exact same thing across every system, so AI reasoning doesn\u2019t get confused by inconsistent definitions.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given any domain, you should be able to sketch a mini-ontology on paper: 4\u20135 entity types and the relationships that connect them.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Domain: a hospital\u2019s patient system. Walking through the sketch step by step:</p>'
+      + '<p><b>Step 1 \u2014 list the nouns that matter:</b> Patient, Doctor, Appointment, Prescription, Insurance Plan. That\u2019s your 5 entity types \u2014 resist the urge to add more than 5 on a first pass; the discipline of picking the essential ones is the actual skill.</p>'
+      + '<p><b>Step 2 \u2014 connect them with verbs, not just lines:</b></p>'
+      + '<ul><li>Patient \u2014 <i>attends</i> \u2014 Appointment</li>'
+      + '<li>Doctor \u2014 <i>conducts</i> \u2014 Appointment</li>'
+      + '<li>Doctor \u2014 <i>issues</i> \u2014 Prescription</li>'
+      + '<li>Prescription \u2014 <i>prescribed_for</i> \u2014 Patient</li>'
+      + '<li>Patient \u2014 <i>covered_by</i> \u2014 Insurance Plan</li></ul>'
+      + '<p><b>Step 3 \u2014 test it with a real question:</b> "Which of Dr. Mehta\u2019s patients are on a Prescription that their Insurance Plan doesn\u2019t cover?" Trace the path: Doctor \u2192 conducts \u2192 Appointment \u2192 attends \u2192 Patient \u2192 covered_by \u2192 Insurance Plan, cross-checked against Prescription \u2192 prescribed_for \u2192 Patient. If you can trace a real question through your sketch in a few hops, the ontology is doing its job.</p>'
+      + '<p>Now do the same 3 steps for a domain you actually know \u2014 your own team\u2019s work is a good test case.</p></div>'},
+
+    {id:'m5', group:'part1', num:'5', tag:'context + reasoning', title:'Graph neural networks (GNN)', skill:'How ML learns from relationship-structured (graph) data, not just tabular data.',
+      body: '<p>Combine Module 1 (ML learns patterns from examples) with Module 4 (data structured as a graph). A standard neural network expects fixed, tabular input. A knowledge graph isn\u2019t naturally tabular \u2014 a node might have 3 connections or 3,000.</p>'
+      + '<p>A <b>Graph Neural Network</b> is a model architecture built to learn from graph-structured data: each node "looks at" its neighbors, aggregates information from them, and updates its own representation (embedding) \u2014 repeated over several passes so information propagates across the network.</p>'
+      + '<h4>What this enables, in any domain</h4>'
+      + '<ul><li><b>Anomaly/fraud detection</b> \u2014 flagging an entity because it\u2019s tightly connected to a suspicious cluster, not because it looks suspicious alone.</li>'
+      + '<li><b>Recommendation via network effects</b> \u2014 predicting interest because connected entities recently showed that interest.</li>'
+      + '<li><b>Risk/impact propagation</b> \u2014 estimating how an event affecting one node propagates to connected nodes.</li></ul>'
+      + '<div class="acb-callout"><b>One-line summary:</b> ML learns from rows. GNNs learn from networks of relationships.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>You should be able to explain, in your own words, why a GNN could catch a pattern that row-by-row ML would miss.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Scenario: an online marketplace is trying to catch a seller fraud ring. Look at the sellers one row at a time \u2014 which is what row-by-row ML does \u2014 and every single account looks clean: good ratings, on-time shipping, no complaints, normal-looking transaction volume.</p>'
+      + '<p>Row-by-row ML has no way to notice this, because nothing in any individual account\u2019s own row looks wrong. That\u2019s the whole problem: the signal isn\u2019t <i>in</i> any one row, it\u2019s <i>between</i> rows.</p>'
+      + '<p>Now structure the same data as a graph: sellers as nodes, edges for shared device fingerprints, shared payout bank accounts, and overlapping buyer IDs. Suddenly 40 "unrelated" accounts turn out to be tightly wired together \u2014 same three devices, same two bank accounts, a suspiciously overlapping buyer pool.</p>'
+      + '<p>A GNN picks this up because each node\u2019s updated representation absorbs information from its neighbors. An account connected to 39 other accounts sharing a device fingerprint ends up with an embedding that looks nothing like a normal, isolated seller\u2019s \u2014 even though its own individual data (ratings, shipping time) is identical to a legitimate seller\u2019s.</p>'
+      + '<p>That\u2019s the pattern to reuse: row-by-row ML asks "does this entity look suspicious." A GNN asks "does this entity\u2019s <i>neighborhood</i> look suspicious." Different question, different blind spot.</p></div>'},
+
+    {id:'m6', group:'part1', num:'6', tag:'reasoning', title:'LLMs, in just enough depth', skill:'Precise vocabulary for talking about generative AI \u2014 beyond "it\u2019s a smart chatbot".',
+      body: '<ul><li>An <b>LLM (Large Language Model)</b> is a neural network trained on enormous amounts of text to predict "what comes next", which at scale produces reasoning, summarization, conversation, and instruction-following.</li>'
+      + '<li>Everything an LLM "knows" comes from training data frozen at a point in time. It does <b>not</b> automatically know your live data, your organization\u2019s specifics, or anything after its training cutoff.</li>'
+      + '<li>This limitation is the entire reason RAG (next module) exists: an LLM is generically capable but knows nothing about your specific, current situation unless you hand it that context at the moment you ask.</li></ul>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Explain to a non-technical colleague, in one paragraph, why an LLM can write a beautiful email about a customer but still get the customer\u2019s actual account details wrong.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Here\u2019s an actual paragraph you could say out loud to a colleague, built from an analogy:</p>'
+      + '<p><i>"Think of the AI like a brilliant new hire who read every book, article, and training manual in the industry before their first day \u2014 they write beautifully, they know the terminology cold, they sound like they\u2019ve been here for years. But they\u2019ve never actually opened our customer database. So if you ask them to draft an email about a customer, they\u2019ll write something that <b>sounds</b> exactly right \u2014 professional tone, correct industry terms, well-structured \u2014 but if you ask them what that customer\u2019s current balance is, they\u2019re guessing, confidently, because they were never shown the actual record. The writing skill and the factual knowledge are two completely separate things, and it\u2019s easy to assume that because the writing is good, the facts must be too."</i></p>'
+      + '<p>Why this analogy works: it locates the failure precisely (never saw the record) instead of vaguely blaming "the AI" \u2014 and it explains why the output can be simultaneously impressive and wrong, which is the confusing part non-technical colleagues usually can\u2019t reconcile.</p>'
+      + '<p>Swap "customer database" for whatever\u2019s relevant in your world \u2014 inventory levels, today\u2019s stock price, this quarter\u2019s numbers \u2014 and the same paragraph still works.</p></div>'},
+
+    {id:'m7', group:'part1', num:'7', tag:'the bridge', title:'RAG and GraphRAG', skill:'How generative AI gets grounded in real, current, organization-specific data.',
+      body: '<p><b>RAG (Retrieval-Augmented Generation):</b> instead of relying on what the LLM already "knows", you first retrieve relevant information from your own data (using embeddings from Module 1) and insert it into the prompt before the LLM answers. This is why AI assistants can answer questions about data they were never trained on.</p>'
+      + '<p><b>Standard RAG\u2019s limitation:</b> it retrieves isolated chunks. Good at "find facts that resemble this question", bad at multi-hop relational reasoning, because flat text chunks don\u2019t preserve relationships between facts.</p>'
+      + '<p><b>GraphRAG</b> solves this by retrieving from a knowledge graph instead of flat text \u2014 pulling an entity along with its connections and relationship paths \u2014 and feeding that structured, relationship-rich context to the LLM.</p>'
+      + '<div class="acb-callout"><b>The single most important idea in this coursebook:</b> Plain RAG gives an LLM facts. GraphRAG gives an LLM facts plus how they relate to each other \u2014 the difference between AI that retrieves information and AI that can actually reason about a complex situation.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given a business question, you should be able to say whether it\u2019s answerable by simple RAG (single-document lookup) or genuinely needs GraphRAG (multi-entity, relationship-dependent reasoning).</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Two real questions, run through the same test:</p>'
+      + '<p><b>Question 1: "What\u2019s our refund policy for damaged goods?"</b> Test: can this be answered by finding the single most relevant document (the refund policy page) and reading it? Yes \u2014 it\u2019s sitting in one place, no relationships need tracing. <b>This is plain RAG.</b> Retrieve the policy doc, hand it to the LLM, done.</p>'
+      + '<p><b>Question 2: "Which of our vendors also supply Competitor X, and do any of those vendors currently have an active contract breach with us?"</b> Test: is the answer sitting in one document? No \u2014 it requires connecting three separate facts: our vendor list, which of those vendors also appear in Competitor X\u2019s public supply chain, and which vendors have an open breach record. No single document contains "vendor \u2192 also supplies competitor \u2192 has breach." <b>This needs GraphRAG</b> \u2014 retrieving the vendor entities plus their relationship paths (supplies, breach status), not just a matching paragraph.</p>'
+      + '<p>The reusable test: ask yourself "could I answer this by finding and reading one good document?" If yes, plain RAG. If answering it requires you to mentally connect two or more separate facts that live in different places, that\u2019s the GraphRAG signal.</p></div>'},
+
+    {id:'m8', group:'part1', num:'8', tag:'autonomy', title:'Agentic AI and agentic workflows', skill:'Understanding autonomous AI systems \u2014 the end goal.',
+      body: '<p>A single LLM interaction is one-shot: you ask, it answers, done. An <b>agent</b> is an LLM wrapped in a loop that can:</p>'
+      + '<ol><li><b>Plan</b> \u2014 break a goal into steps.</li><li><b>Use tools</b> \u2014 query a database, hit an API, run a calculation, take an action in another system.</li>'
+      + '<li><b>Observe results</b> \u2014 read what the tool returned.</li><li><b>Decide the next step</b> \u2014 call another tool, ask a clarifying question, or conclude it has enough to respond.</li>'
+      + '<li><b>Loop</b> until the goal is met.</li></ol>'
+      + '<h4>Single-agent vs. multi-agent</h4><p>A single agent handles one workflow end-to-end using several tools. A <b>multi-agent system</b> splits a complex task across specialized agents, coordinated by an orchestrator \u2014 useful when a workflow genuinely spans distinct areas of expertise.</p>'
+      + '<div class="acb-callout">An agent is only as good as (a) the context it can retrieve and (b) the actions it\u2019s allowed to take. Grounded context plus the ability to actually act is what separates an agent from a chatbot that describes what it would do.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given a multi-step task in any domain, sketch what an agent handling it would need: what tools, what context sources, what decision points.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Task: auto-draft renewal emails for subscriptions expiring in the next 7 days.</p>'
+      + '<p><b>Tools it needs:</b> a billing API call to check which subscriptions expire this week; a CRM lookup to pull the contact\u2019s name and account history; an email-drafting/sending capability.</p>'
+      + '<p><b>Context sources:</b> the billing database (expiry dates, plan tier), the CRM (past support tickets, renewal history, any noted complaints).</p>'
+      + '<p><b>Decision points \u2014 this is the part people usually skip:</b></p>'
+      + '<ul><li>If the customer\u2019s last support ticket was a complaint or a cancellation request, <i>don\u2019t</i> auto-send \u2014 route to a human instead</li>'
+      + '<li>If the account is on a legacy pricing plan, flag it rather than quoting current pricing automatically</li>'
+      + '<li>If the draft is generated but confidence in the personalization is low (e.g. missing account history), hold for human review before sending</li></ul>'
+      + '<p>Notice the plan/act/observe/decide loop from earlier in this module showing up directly: plan (check what\u2019s expiring), act (pull CRM context), observe (any red flags in the account?), decide (auto-send, route to human, or flag). Every agent design exercise reduces to filling in these same four blanks for a specific task.</p></div>'},
+
+    {id:'m9', group:'part1', num:'9', tag:'synthesis', title:'The full stack, end to end', skill:'How every piece connects \u2014 independent of any specific company or product.',
+      body: '<p>The complete pipeline, applicable to banking, healthcare, retail, logistics, or SaaS \u2014 only the entities and ontology change:</p>'
+      + '<div class="acb-callout"><b>Data fabric</b> pulls raw data from fragmented source systems \u2192 <b>feature engineering</b> turns raw data into meaningful signals \u2192 a <b>knowledge graph</b>, structured by an <b>ontology</b>, organizes entities and relationships \u2192 a <b>GNN</b> learns predictive patterns from that graph \u2192 <b>GraphRAG</b> retrieves the relevant slice of graph and facts at question-time \u2192 an <b>LLM</b>, working inside an <b>agent</b>, reasons over that context and takes action.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Reflection</span>Trace one real AI feature you use through this pipeline \u2014 which stages does it actually implement, and which does it skip?</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Take Spotify\u2019s "Discover Weekly" and trace it through all six stages:</p>'
+      + '<p><b>Data fabric \u2014 present, in spirit.</b> It pulls your listening behavior, skip rates, and playlist adds across the app in something close to real time.</p>'
+      + '<p><b>Feature engineering \u2014 present.</b> Raw play events get turned into signals: genres you favor at certain times of day, how often you skip a track in the first 10 seconds, artists you\u2019ve saved versus just streamed once.</p>'
+      + '<p><b>Knowledge graph / ontology \u2014 arguably absent, or very lightweight.</b> There isn\u2019t a clear "Artist \u2014 collaborated_with \u2014 Artist" relationship graph doing the heavy lifting here; it leans more on collaborative filtering (users like you also liked X) than explicit relationship traversal.</p>'
+      + '<p><b>GNN \u2014 possibly, for the "users like you" matching, but not confirmed publicly, and not essential to how the feature is usually described.</b></p>'
+      + '<p><b>GraphRAG / LLM / Agent \u2014 largely absent.</b> Discover Weekly predates the LLM wave; it\u2019s a recommendation pipeline, not a reasoning-and-acting agent. It doesn\u2019t "explain itself" or take multi-step actions on your behalf.</p>'
+      + '<p>Conclusion: a genuinely useful, personalized feature that implements roughly the first two stages solidly, and skips the last three almost entirely \u2014 proof that you don\u2019t need the whole pipeline for something to feel smart, but also a reminder that "personalized" and "reasoning agent" are very different claims.</p>'
+      + '<p>Now pick a feature you actually use daily and run the same six-stage trace.</p></div>'},
+
+    {id:'m10', group:'part2', num:'10', tag:'engineering the agent', title:'Tool calling, frameworks & protocols', skill:'How an agent\u2019s "use tools" step (Module 8) is actually implemented \u2014 the vocabulary engineers use day to day.',
+      body: '<p><b>Tool calling / function calling</b> is the mechanism underneath every agent: the LLM is given a list of available tools (name, description, expected inputs) and, instead of only returning text, can return a structured request like "call get_weather with city=Delhi". The host application executes that call and feeds the result back to the model. This is exactly what happens every time I search the web or run code mid-conversation with you.</p>'
+      + '<h4>Frameworks \u2014 the scaffolding engineers build agents with</h4>'
+      + '<ul><li><b>LangChain</b> \u2014 a library of building blocks for chaining LLM calls, tools, and memory together into a workflow.</li>'
+      + '<li><b>LangGraph</b> \u2014 a newer, more explicit approach: define an agent as a graph/state machine, with nodes for each step and edges for possible transitions. Preferred when a workflow has real branching logic (retry loops, human-approval checkpoints, multiple paths).</li>'
+      + '<li>Lower-level SDK tool-use \u2014 calling an LLM provider\u2019s API directly with a tool schema, no framework in between. Common when a team wants full control or the workflow is simple.</li></ul>'
+      + '<h4>MCP (Model Context Protocol)</h4><p>An open standard for connecting LLMs to external tools and data sources \u2014 think of it as a common plug shape so any AI application can talk to any tool server without a custom integration each time. Instead of hand-wiring "connect our agent to Slack, then to Jira, then to our database" three separate ways, MCP lets each of those become a standard server the agent can discover and use.</p>'
+      + '<h4>ReAct pattern</h4><p>Short for "Reason + Act" \u2014 the now-standard loop where the model alternates between writing out its reasoning ("I need the customer\u2019s balance before I can answer this") and taking an action (calling a tool), rather than jumping straight to an answer. This is the pattern underneath Module 8\u2019s plan \u2192 act \u2192 observe \u2192 decide loop.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given an agent architecture diagram or a technical proposal, you should be able to identify which part is "the model," which is "the framework," and which is "the protocol/integration layer" \u2014 these get conflated constantly in casual conversation, and engineers will assume you know the difference.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>A vendor pitch says: "We use Claude, orchestrated through LangGraph, connected to your ticketing system via an MCP server."</p>'
+      + '<p>Break it apart, one clause at a time:</p>'
+      + '<ul><li><b>"We use Claude"</b> \u2014 this is <b>the model</b>. It\u2019s the LLM doing the actual reasoning and language generation.</li>'
+      + '<li><b>"orchestrated through LangGraph"</b> \u2014 this is <b>the framework</b>. It\u2019s the scaffolding managing the steps, state, and branching logic of the agent\u2019s loop \u2014 it doesn\u2019t reason itself, it wires the reasoning together.</li>'
+      + '<li><b>"connected to your ticketing system via an MCP server"</b> \u2014 this is <b>the protocol/integration layer</b>. It\u2019s how the agent actually reaches your ticketing tool without a custom-built connector.</li></ul>'
+      + '<p>Why this matters in the room: if someone says "we\u2019re using MCP, so we don\u2019t need a different model," that\u2019s a category error \u2014 MCP is the plug, not the brain. Catching that distinction out loud is exactly what separates "read the vocabulary" from "can actually evaluate the pitch."</p>'
+      + '<p>Try it on the next AI vendor deck you see: find the sentence describing the architecture and sort every noun into model, framework, or protocol.</p></div>'},
+
+    {id:'m11', group:'part2', num:'11', tag:'engineering the agent', title:'Prompt engineering fundamentals', skill:'The system prompt is how an agent\u2019s behavior gets "programmed" without writing code \u2014 you need to be able to read and critique one.',
+      body: '<p>A prompt has structural parts engineers refer to precisely:</p>'
+      + '<ul><li><b>System prompt</b> \u2014 standing instructions that shape the model\u2019s role, tone, and constraints for the whole conversation (e.g. "You are a credit-risk assistant. Never approve a loan yourself; only recommend.").</li>'
+      + '<li><b>User prompt</b> \u2014 the actual question or task for this turn.</li>'
+      + '<li><b>Few-shot examples</b> \u2014 sample input/output pairs included in the prompt to show the model the exact pattern you want, instead of describing it abstractly.</li>'
+      + '<li><b>Chain-of-thought prompting</b> \u2014 explicitly asking the model to reason step by step before answering, which measurably improves accuracy on multi-step problems.</li>'
+      + '<li><b>Structured output</b> \u2014 constraining the model to respond in a specific format (JSON, XML tags) so the output can be reliably parsed by the next step in a pipeline, rather than freeform prose a program would have to guess at.</li></ul>'
+      + '<div class="acb-callout">For an agentic project, the system prompt is often the single highest-leverage design artifact in the whole build \u2014 it defines what the agent will and won\u2019t do before a single line of orchestration code runs. Expect engineers to iterate on it constantly.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Exercise</span>Find any AI system prompt shared publicly (many companies publish these) and try to label each paragraph: is it defining role, giving a constraint, giving an example, or specifying output format?</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Here\u2019s a short constructed system prompt, labeled sentence by sentence, so you can see what each piece is doing:</p>'
+      + '<p><i>"You are a support assistant for a software company."</i> \u2014 <b>role definition.</b> Establishes identity and scope before anything else.</p>'
+      + '<p><i>"Never share internal pricing discounts; only quote published list prices."</i> \u2014 <b>constraint.</b> A hard boundary on behavior, independent of what the user asks.</p>'
+      + '<p><i>"Example: if asked \u2018can I get a discount,\u2019 respond with \u2018I can share our published pricing, and connect you with sales for custom quotes.\u2019"</i> \u2014 <b>few-shot example.</b> Shows the exact pattern rather than describing it abstractly.</p>'
+      + '<p><i>"Always respond in under 100 words, in plain text, no markdown."</i> \u2014 <b>output format constraint.</b> Shapes the shape of the answer, not its content.</p>'
+      + '<p>Once you can sort a prompt into these four buckets, you can also spot what\u2019s <i>missing</i> from a weak one \u2014 usually it\u2019s the constraints or the examples, which is exactly where most "the AI said something it shouldn\u2019t have" incidents trace back to.</p>'
+      + '<p>Now find a real one \u2014 several companies publish theirs \u2014 and sort it the same way.</p></div>'},
+
+    {id:'m12', group:'part2', num:'12', tag:'engineering the agent', title:'Fine-tuning vs. RAG vs. prompting', skill:'The decision engineers make constantly, and the tradeoff triangle behind it.',
+      body: '<p>Three different ways to change what an LLM-based system does \u2014 easy to conflate, but they solve different problems:</p>'
+      + '<table class="acb-table"><tr><th>Approach</th><th>What it changes</th><th>Cost/speed</th><th>Best for</th></tr>'
+      + '<tr><td><b>Prompting</b></td><td>Instructions given at question-time; no retraining</td><td>Fastest, cheapest, instantly reversible</td><td>Quick behavior changes, most day-to-day tasks</td></tr>'
+      + '<tr><td><b>RAG</b></td><td>Adds current or proprietary knowledge at question-time (Module 7)</td><td>Moderate \u2014 needs retrieval infrastructure, but no model retraining</td><td>Needing facts the model doesn\u2019t know or that change often</td></tr>'
+      + '<tr><td><b>Fine-tuning</b></td><td>Permanently adjusts the model\u2019s weights on your examples</td><td>Slowest, most expensive, requires real ML expertise</td><td>Changing tone/format/domain skill in a way that must hold with no prompt at all, or that prompting can\u2019t reliably achieve</td></tr></table>'
+      + '<div class="acb-callout"><b>Decision heuristic:</b> "Do I need new <i>facts</i>?" \u2192 RAG. "Do I need a new <i>skill, format, or behavior baked in</i>?" \u2192 fine-tuning. "Do I just need to <i>steer</i> the existing model?" \u2192 prompting. Most production agentic systems today lean heavily on prompting + RAG, and reach for fine-tuning only when those two genuinely aren\u2019t enough.</div>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given three example requirements (e.g. "always respond in our brand\u2019s exact tone," "know our current inventory levels," "handle a new type of customer request today"), you should be able to assign each one to prompting, RAG, or fine-tuning.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Walking through the exact three requirements from the checkpoint:</p>'
+      + '<p><b>"Always respond in our brand\u2019s exact tone"</b> \u2014 this is a <i>behavior/style</i> that needs to hold consistently, every time, without anyone re-explaining it. Start with prompting (a well-written system prompt describing the tone, with examples) since it\u2019s cheap and reversible. Only escalate to fine-tuning if prompting genuinely isn\u2019t holding up at scale across thousands of varied conversations.</p>'
+      + '<p><b>"Know our current inventory levels"</b> \u2014 this is a <i>fact that changes constantly</i>. Fine-tuning would be the wrong tool immediately \u2014 you\u2019d have to retrain every time stock changes, which is absurd. This is a textbook <b>RAG</b> case: retrieve today\u2019s inventory count at question-time.</p>'
+      + '<p><b>"Handle a new type of customer request today"</b> \u2014 this needs to work <i>immediately</i>, with no lag for retraining or rebuilding a retrieval index. That points to <b>prompting</b>: add instructions for the new request type to the system prompt right now, live.</p>'
+      + '<p>The pattern underneath all three: ask "is this a fact, a skill, or an urgent instruction?" before reaching for any tool. Most wrong-tool mistakes happen when a fact gets treated like a skill (trying to fine-tune in knowledge that changes weekly) or a skill gets treated like a fact (trying to RAG in a tone that should just live in the system prompt).</p></div>'},
+
+    {id:'m13', group:'part2', num:'13', tag:'engineering the agent', title:'Memory & context management', skill:'What happens when an agent\u2019s conversation or task runs longer than the model can "see" at once.',
+      body: '<p>An LLM only sees what\u2019s inside its <b>context window</b> \u2014 the maximum amount of text (measured in tokens, roughly word-fragments) it can process in one call. Everything the model "knows" during a conversation has to fit inside that window, including the system prompt, retrieved documents, tool results, and the conversation so far.</p>'
+      + '<h4>Two kinds of memory</h4>'
+      + '<ul><li><b>Short-term / working memory</b> \u2014 the current conversation or task, held directly in the context window.</li>'
+      + '<li><b>Long-term memory</b> \u2014 information that needs to persist across sessions (what happened last week, a user\u2019s known preferences). Since it can\u2019t all fit in the context window forever, systems typically summarize old context, or store it externally and retrieve the relevant slice via RAG (Module 7) when needed \u2014 this is exactly the pattern behind this artifact\u2019s own progress tracking, just applied to conversation content instead.</li></ul>'
+      + '<h4>Chunking</h4><p>When documents are too large to retrieve or process whole, they\u2019re split into smaller pieces ("chunks") before being embedded and stored for RAG. How a team chunks data \u2014 by paragraph, by fixed size, by semantic boundary \u2014 materially affects retrieval quality, and is a common point of engineering debate.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given a long-running, multi-day agent workflow, you should be able to propose a basic memory strategy: what stays in the live context, what gets summarized, and what gets pushed to external storage and retrieved on demand.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Task: an AI project-management assistant tracking a 2-week software sprint, checking in daily.</p>'
+      + '<p><b>What stays in the live context window:</b> today\u2019s stand-up notes, the current list of open tickets, and yesterday\u2019s unresolved blockers. This is what the assistant needs immediately, every single interaction, so it stays "hot."</p>'
+      + '<p><b>What gets summarized:</b> each day\u2019s full stand-up transcript gets compressed into a 2-3 line digest at end of day ("Team blocked on API access, resolved by EOD; sprint on track") rather than keeping the full transcript live for two weeks \u2014 that would blow past the context window fast and bury the signal in noise.</p>'
+      + '<p><b>What gets pushed to external storage and retrieved on demand:</b> the full historical record \u2014 every decision, every ticket change \u2014 goes into external storage. If someone asks on day 12, "why did we deprioritize the search feature," the assistant retrieves just that relevant slice via RAG, rather than trying to keep two weeks of raw history live at all times.</p>'
+      + '<p>Notice this is the exact same shape as this coursebook\u2019s own progress tracking: your read/quiz state lives outside the "live" page and gets pulled back in only when relevant \u2014 long-term memory, retrieved on demand, not held in your face the whole time.</p></div>'},
+
+    {id:'m14', group:'part2', num:'14', tag:'engineering the agent', title:'Evaluation & observability', skill:'Where most engineering time on agentic projects actually goes \u2014 not building, but measuring.',
+      body: '<p>Building an agent that works once is easy. Knowing it reliably works, and catching when it stops, is the hard and ongoing part.</p>'
+      + '<h4>Evals</h4><p>A structured test set \u2014 example inputs paired with known-good ("golden") outputs \u2014 run automatically to check whether the system still performs correctly after any change. Since outputs are often free text, teams frequently use <b>LLM-as-judge</b>: another model scores the output against criteria, because exact-string matching rarely works for natural language.</p>'
+      + '<h4>Metrics engineers actually track</h4>'
+      + '<ul><li><b>Task completion rate</b> \u2014 did the agent actually finish the job.</li><li><b>Hallucination rate</b> \u2014 how often it states something false or ungrounded.</li>'
+      + '<li><b>Latency</b> \u2014 how long a response takes, which compounds badly in multi-step agent loops.</li><li><b>Cost per call/session</b> \u2014 token usage translates directly into spend, and agent loops can multiply this fast if unchecked.</li></ul>'
+      + '<h4>Observability / tracing</h4><p>Tools (e.g. LangSmith, or a provider\u2019s own console) that log every step of an agent\u2019s reasoning \u2014 each tool call, each intermediate thought, each retrieved document \u2014 so engineers can debug *why* an agent did something, not just *what* it output.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>For any agentic feature you\u2019re scoping, you should be able to propose 3 concrete metrics you\u2019d want tracked before calling it "done."</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Feature: an agent that triages incoming support tickets and routes them to the right team.</p>'
+      + '<p><b>Metric 1 \u2014 correct-routing rate.</b> Sample a batch of tickets weekly, have a human independently re-label where they should\u2019ve gone, and compare. This is the core "is it actually doing the job" number \u2014 not whether it responds fast, but whether it\u2019s <i>right</i>.</p>'
+      + '<p><b>Metric 2 \u2014 escalation rate needing human override.</b> How often does a human have to step in and re-route after the agent already acted? A rising trend here is often the earliest warning sign of quiet model or data drift, well before routing accuracy visibly drops.</p>'
+      + '<p><b>Metric 3 \u2014 average time-to-first-response.</b> The efficiency half of the equation \u2014 accuracy alone doesn\u2019t justify the project if tickets now sit twice as long waiting on the agent\u2019s decision.</p>'
+      + '<p>Notice the shape: one metric proves it\u2019s correct, one catches silent failure, one proves it\u2019s actually faster than the old way. That three-part shape \u2014 correctness, failure detection, efficiency \u2014 transfers to almost any agentic feature you\u2019ll scope, not just ticket triage.</p></div>'},
+
+    {id:'m15', group:'part2', num:'15', tag:'engineering the agent', title:'Agent security', skill:'The risks that are specific to giving an LLM tools and autonomy, not just conversation.',
+      body: '<p>An agent that can only chat is low-risk. An agent that can take actions \u2014 send an email, query a database, move money \u2014 inherits a new category of risk.</p>'
+      + '<h4>Prompt injection</h4><p>Malicious or misleading instructions hidden inside content the agent reads \u2014 a webpage, a document, a tool\u2019s output \u2014 attempting to hijack the agent into doing something the user never asked for. This is the single most-discussed security issue in agentic AI right now, precisely because an agent that reads untrusted content (email, the web, uploaded files) is exposed to it by design.</p>'
+      + '<h4>Tool permission scoping</h4><p>Giving an agent the minimum access it needs for its job ("least privilege") \u2014 e.g. read-only database access instead of write access, or requiring explicit human confirmation before any irreversible action (sending, deleting, paying). This is why a well-designed agent asks you to confirm before it sends an email on your behalf, rather than just sending it.</p>'
+      + '<h4>Data leakage</h4><p>Sensitive data unintentionally ending up somewhere it shouldn\u2019t \u2014 in a prompt sent to a third-party model provider, in logs, or in an output shown to the wrong user. A real concern the moment an agent has access to more than one customer\u2019s data at a time.</p>'
+      + '<div class="acb-checkpoint"><span class="acb-cp-label">Skill checkpoint</span>Given an agent with access to email, calendar, and a CRM, you should be able to sketch a basic permission boundary: what it can read freely, what needs confirmation before acting, and what it should never be allowed to touch autonomously.</div>'
+      + '<div class="acb-worked"><span class="acb-worked-label">Worked example</span>'
+      + '<p>Sketching the exact boundary from the checkpoint, tier by tier:</p>'
+      + '<p><b>Can read freely, no confirmation needed:</b> incoming emails, calendar availability, existing CRM notes and history. Reading is low-risk \u2014 the agent needs broad visibility to be useful at all, and nothing irreversible happens just by looking.</p>'
+      + '<p><b>Needs human confirmation before acting:</b> sending any email externally, scheduling a meeting on someone else\u2019s calendar, updating a CRM record\u2019s status (e.g. marking a deal "closed"). These are reversible-but-visible actions \u2014 wrong, they\u2019re embarrassing or create cleanup work, but not catastrophic, so a quick "approve this draft?" step is proportionate.</p>'
+      + '<p><b>Never allowed to touch autonomously:</b> deleting CRM records, forwarding attachments to addresses outside the company domain, or changing anyone else\u2019s calendar permissions. These are the irreversible-or-high-blast-radius actions \u2014 the kind where "the agent made a mistake" turns into a data-loss or data-leakage incident, not just an annoyance.</p>'
+      + '<p>The general heuristic underneath this sketch: sort every possible action into read (free), write-reversible (confirm first), write-irreversible (never autonomous) \u2014 and that three-tier split is reusable for any agent, any set of tools, not just this one.</p></div>'},
+
+    {id:'gloss', group:'reference', num:'G', tag:'reference', title:'Glossary', skill:'Quick-reference definitions for every term above.',
+      body: '<table class="acb-table"><tr><th>Term</th><th>Definition</th></tr>'
+      + '<tr><td>Model</td><td>A trained pattern-recognizer; a file of learned weights</td></tr>'
+      + '<tr><td>Training / Inference</td><td>Teaching the model (once) vs. the model making live predictions (every time)</td></tr>'
+      + '<tr><td>Embedding</td><td>Turning anything into numbers such that similar things have similar numbers</td></tr>'
+      + '<tr><td>Feature</td><td>An input variable fed to a model</td></tr>'
+      + '<tr><td>Knowledge graph</td><td>Data stored as entities + relationships instead of tables</td></tr>'
+      + '<tr><td>Ontology</td><td>The agreed vocabulary/schema of what entities and relationships are allowed to exist</td></tr>'
+      + '<tr><td>GNN</td><td>A neural network that learns from graph-structured (relationship) data</td></tr>'
+      + '<tr><td>RAG</td><td>Retrieving relevant data and inserting it into an LLM\u2019s prompt before it answers</td></tr>'
+      + '<tr><td>GraphRAG</td><td>RAG that retrieves from a knowledge graph, preserving relationships, not just flat text</td></tr>'
+      + '<tr><td>Data fabric</td><td>Architecture giving unified, live access to data across many source systems</td></tr>'
+      + '<tr><td>Agent</td><td>An LLM in a loop that plans, calls tools, observes results, and acts autonomously</td></tr>'
+      + '<tr><td>Tool / function calling</td><td>The mechanism letting an LLM request a structured action, which the host app executes and returns results from</td></tr>'
+      + '<tr><td>MCP</td><td>Model Context Protocol \u2014 an open standard for connecting LLMs to external tools/data without custom integrations each time</td></tr>'
+      + '<tr><td>ReAct</td><td>"Reason + Act" \u2014 the pattern of alternating explicit reasoning with tool actions</td></tr>'
+      + '<tr><td>System prompt</td><td>Standing instructions that shape a model\u2019s role, tone, and constraints for a whole session</td></tr>'
+      + '<tr><td>Chain-of-thought</td><td>Prompting the model to reason step by step before answering</td></tr>'
+      + '<tr><td>Fine-tuning</td><td>Permanently adjusting a model\u2019s weights on custom examples, rather than instructing it at question-time</td></tr>'
+      + '<tr><td>Context window</td><td>The maximum amount of text (tokens) a model can process in one call</td></tr>'
+      + '<tr><td>Eval</td><td>A structured test set with known-good outputs, used to automatically check system performance</td></tr>'
+      + '<tr><td>Prompt injection</td><td>Malicious instructions hidden in content an agent reads, attempting to hijack its behavior</td></tr></table>'},
+
+    {id:'plan', group:'reference', num:'P', tag:'reference', title:'Skill-based study plan', skill:'Five stages, paced to your own bandwidth \u2014 no fixed calendar.',
+      body: '<table class="acb-table"><tr><th>Stage</th><th>Modules</th><th>You should now be able to\u2026</th></tr>'
+      + '<tr><td>1. Foundations</td><td>1, 2, 3</td><td>Explain what a model learns, propose engineered features, explain why fragmented systems block AI</td></tr>'
+      + '<tr><td>2. Structured context</td><td>4, 5</td><td>Sketch an ontology and knowledge graph; explain what a GNN catches that row-based ML can\u2019t</td></tr>'
+      + '<tr><td>3. Grounded reasoning</td><td>6, 7</td><td>Explain LLM limitations precisely; distinguish RAG vs. GraphRAG problems</td></tr>'
+      + '<tr><td>4. Autonomy (concepts)</td><td>8, 9</td><td>Design what an agentic workflow needs: tools, context sources, decision points</td></tr>'
+      + '<tr><td>5. Autonomy (engineering)</td><td>10\u201315</td><td>Talk shop with engineers: tool calling, frameworks, prompt design, fine-tuning tradeoffs, memory, evals, and agent security</td></tr></table>'
+      + '<div class="acb-callout"><b>Recurring exercise:</b> pick one AI-powered feature you encounter \u2014 a recommendation, a fraud alert, a chatbot \u2014 and reverse-engineer it using this coursebook\u2019s vocabulary. Done weekly, this builds fluency faster than passive reading.</div>'}
+  ];
+
+  var quizzes = {
+    quiz1: {
+      label: 'Quiz \u00b7 Part 1', subtitle: 'Strategic fluency \u2014 Modules 0\u20139', passPct: 0.9,
+      questions: [
+        {id:'q1', text:'Which of the three AI system layers does a simple chatbot UI on top of an unchanged database primarily upgrade?', options:['Context','Reasoning','Interface','Data Fabric'], correct:2},
+        {id:'q2', text:'The "Context" layer of an AI system answers which question?', options:['How does a human interact with it?','How does it decide what to say or do?','What does it actually know about this specific situation?','How fast can it respond?'], correct:2},
+        {id:'q3', text:'In supervised learning, what does the model need in order to learn?', options:['A reward signal only','Labeled examples','No data at all','A knowledge graph'], correct:1},
+        {id:'q4', text:'Clustering customers into segments nobody predefined is an example of:', options:['Supervised learning','Reinforcement learning','Unsupervised learning','Fine-tuning'], correct:2},
+        {id:'q5', text:'An embedding is best described as:', options:['A rule written by a programmer','A way to turn anything into numbers so similar things have similar numbers','A type of database table',"A model's training schedule"], correct:1},
+        {id:'q6', text:'"Inference" refers to:', options:['Teaching the model on historical data','The model making a live prediction on new input','Cleaning raw data','Building a knowledge graph'], correct:1},
+        {id:'q7', text:'Feature engineering is best described as:', options:['Writing explicit if-then rules instead of using ML','Transforming raw data into meaningful signals a model can learn from','Visualizing a knowledge graph','Training an LLM from scratch'], correct:1},
+        {id:'q8', text:'Compared to a data warehouse, a data fabric primarily provides:', options:['A single physical copy of all data in one place','Unified, governed, near-real-time access to data across systems without copying it all first','A replacement for machine learning','A type of knowledge graph only'], correct:1},
+        {id:'q9', text:'In a knowledge graph, relationships between entities are represented as:', options:['Rows','Columns','Edges','Indexes'], correct:2},
+        {id:'q10', text:"An ontology's main purpose is to:", options:['Store live transaction data','Define what kinds of entities and relationships are allowed to exist','Train a neural network','Replace a semantic model'], correct:1},
+        {id:'q11', text:'A Graph Neural Network differs from a standard neural network mainly because it:', options:['Only works on tabular row/column data','Learns by having nodes aggregate information from their neighbors','Requires no training data','Cannot use embeddings'], correct:1},
+        {id:'q12', text:'A key limitation of an LLM on its own is that:', options:['It cannot generate any text','It has no knowledge past its training cutoff and does not know your live/proprietary data','It only works with graphs','It cannot follow instructions'], correct:1},
+        {id:'q13', text:'The core difference between plain RAG and GraphRAG is:', options:['GraphRAG does not use an LLM at all','Plain RAG retrieves flat text chunks; GraphRAG retrieves entities plus their relationships from a knowledge graph','RAG is only used for images','GraphRAG replaces the need for embeddings entirely'], correct:1},
+        {id:'q14', text:'In an agentic loop, which sequence best matches "plan \u2192 act \u2192 observe \u2192 decide"?', options:['Train, infer, deploy, monitor','Break the goal into steps, call a tool, read the result, decide the next step','Cluster, classify, label, predict','Warehouse, fabric, lake, graph'], correct:1},
+        {id:'q15', text:"In the coursebook's end-to-end stack, GraphRAG's role is to:", options:['Replace the knowledge graph','Retrieve the relevant slice of graph and facts at question-time for the LLM to reason over','Train the GNN','Store raw transactional data permanently'], correct:1}
+      ]
+    },
+    quiz2: {
+      label: 'Quiz \u00b7 Part 2', subtitle: 'Engineering fluency \u2014 Modules 10\u201315', passPct: 0.9,
+      questions: [
+        {id:'q1', text:'Tool calling / function calling allows an LLM to:', options:['Directly modify its own weights','Return a structured request for the host app to execute, then use the result','Bypass the context window limit entirely','Replace the need for a system prompt'], correct:1},
+        {id:'q2', text:'LangGraph is best described as:', options:['A vector database','An approach that defines an agent as a graph/state machine with explicit branching logic','A prompt engineering technique','An evaluation metric'], correct:1},
+        {id:'q3', text:'MCP (Model Context Protocol) is best understood as:', options:['A fine-tuning technique','An open standard so AI applications can connect to tools and data without custom integrations each time','A type of knowledge graph','A chain-of-thought prompting method'], correct:1},
+        {id:'q4', text:'The ReAct pattern refers to:', options:['Reacting only after training completes','Alternating between explicit reasoning and taking an action, rather than jumping straight to an answer','A JavaScript framework for building chatbots','A method for fine-tuning embeddings'], correct:1},
+        {id:'q5', text:'A system prompt is best described as:', options:["The user's one-time question", "Standing instructions that shape a model's role, tone, and constraints for the whole session", 'A retrieved document chunk', "A tool's structured output"], correct:1},
+        {id:'q6', text:'Few-shot examples in a prompt are used to:', options:['Reduce the size of the context window','Show the model the exact input/output pattern desired, instead of describing it abstractly',"Fine-tune the model's weights",'Replace the need for tool calling'], correct:1},
+        {id:'q7', text:'Chain-of-thought prompting means:', options:['Chaining multiple unrelated models together','Asking the model to reason step by step before answering','Compressing the prompt into fewer tokens','Restricting output to JSON only'], correct:1},
+        {id:'q8', text:'Which approach is best suited when you need the system to know facts that change frequently, without retraining the model?', options:['Fine-tuning','RAG','Chain-of-thought prompting alone','Reinforcement learning from scratch'], correct:1},
+        {id:'q9', text:'Fine-tuning is most appropriate when you need to:', options:['Add a single new fact temporarily','Permanently bake a specific tone, format, or skill into the model\u2019s behavior','Retrieve a document at question-time','Give the model access to a live API'], correct:1},
+        {id:'q10', text:"The fastest and cheapest way to change an LLM's behavior, with no retraining, is:", options:['Fine-tuning','Building a new knowledge graph','Prompting','Building a GNN'], correct:2},
+        {id:'q11', text:'The "context window" refers to:', options:['The physical screen size of a device','The maximum amount of text (tokens) a model can process in one call','The number of tools an agent can call','The number of documents in a knowledge graph'], correct:1},
+        {id:'q12', text:'When conversation history is too long to keep entirely in the context window, a common strategy is to:', options:['Delete the conversation permanently','Summarize older context and/or retrieve relevant pieces externally via RAG','Ignore the token limit entirely','Switch to fine-tuning instead'], correct:1},
+        {id:'q13', text:'"LLM-as-judge" refers to:', options:['A legal compliance tool','Using another model to score an output against evaluation criteria, since exact-string matching rarely works for free text','A method for fine-tuning','A type of prompt injection attack'], correct:1},
+        {id:'q14', text:'Observability/tracing tools in agentic systems are primarily used to:', options:["Increase the model's context window","Log each step of an agent's reasoning and tool calls so engineers can debug why it behaved a certain way",'Automatically fine-tune the model','Replace the need for evals'], correct:1},
+        {id:'q15', text:'Prompt injection is best described as:', options:['A technique for improving retrieval accuracy','Malicious or misleading instructions hidden in content an agent reads, attempting to hijack its behavior','A method of compressing prompts','A type of supervised learning'], correct:1}
+      ]
+    }
+  };
+
+  var GROUP_LABELS = {
+    part1: 'Part 1 \u00b7 strategic fluency',
+    part2: 'Part 2 \u00b7 engineering fluency',
+    reference: 'Reference'
+  };
+
+  var READ_STORAGE_KEY = 'ai-fluency-coursebook-progress';
+  var readState = {};
+  var quizState = {
+    quiz1: {answers:{}, submitted:false, score:0},
+    quiz2: {answers:{}, submitted:false, score:0}
+  };
+  var currentView = 'part1';
+  var moduleObserver = null;
+
+  var sideEl = document.getElementById('acb-side');
+  var mainEl = document.getElementById('acb-main');
+  var topLinksEl = document.getElementById('acb-toplinks');
+
+  function prefersReducedMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function modulesForView(view){
+    if(view === 'part1') return modules.filter(function(m){ return m.group === 'part1'; });
+    if(view === 'part2') return modules.filter(function(m){ return m.group === 'part2' || m.group === 'reference'; });
+    return [];
+  }
+
+  /* ---------- Reading views (Part 1 / Part 2) ---------- */
+
+  function renderReadingView(view){
+    var list = modulesForView(view);
+
+    var ringCirc = 103.7;
+    sideEl.innerHTML =
+      '<div><div class="acb-eyebrow">' + (view === 'part1' ? 'Part 1' : 'Part 2') + '</div>'
+      + '<div class="acb-title">' + (view === 'part1' ? 'Strategic fluency' : 'Engineering fluency') + '</div></div>'
+      + '<div class="acb-progress-row"><svg class="acb-ring" width="40" height="40" viewBox="0 0 40 40">'
+      + '<circle cx="20" cy="20" r="16.5" fill="none" stroke="var(--line)" stroke-width="4"/>'
+      + '<circle id="acb-ring-fg" cx="20" cy="20" r="16.5" fill="none" stroke="var(--edge)" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + ringCirc + '" stroke-dashoffset="' + ringCirc + '" transform="rotate(-90 20 20)"/>'
+      + '</svg><div class="acb-progress-text"><b id="acb-progress-count">0/' + list.length + '</b> sections read</div></div>'
+      + '<ul class="acb-nav" id="acb-nav"></ul>'
+      + '<button class="acb-reset" id="acb-reset">Reset progress</button>';
+
+    var navEl = document.getElementById('acb-nav');
+    var lastGroup = null;
+    list.forEach(function(m){
+      if(m.group !== lastGroup){
+        var groupHeader = document.createElement('li');
+        groupHeader.className = 'acb-nav-group';
+        groupHeader.textContent = GROUP_LABELS[m.group] || m.group;
+        navEl.appendChild(groupHeader);
+        lastGroup = m.group;
+      }
+      var li = document.createElement('li');
+      li.className = 'acb-nav-item';
+      li.id = 'nav-' + m.id;
+      li.innerHTML =
+        '<span class="acb-node"><svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
+        + '<button class="acb-nav-btn" data-target="' + m.id + '">'
+        + '<span class="acb-nav-num">' + m.num + ' \u00b7 ' + m.tag + '</span>'
+        + '<span class="acb-nav-label">' + m.title + '</span>'
+        + '</button>';
+      navEl.appendChild(li);
+    });
+
+    mainEl.innerHTML = '';
+    lastGroup = null;
+    list.forEach(function(m, i){
+      if(m.group !== lastGroup){
+        var divider = document.createElement('div');
+        divider.className = 'acb-content-divider';
+        divider.innerHTML = '<span class="acb-content-divider-text">' + (GROUP_LABELS[m.group] || m.group) + '</span><span class="acb-content-divider-line"></span>';
+        mainEl.appendChild(divider);
+        lastGroup = m.group;
+      }
+      var details = document.createElement('details');
+      details.className = 'acb-module';
+      details.id = 'mod-' + m.id;
+      if(i === 0) details.open = true;
+      details.innerHTML =
+        '<summary>'
+        + '<svg class="acb-chevron" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        + '<div class="acb-summary-text">'
+        + '<span class="acb-module-tag">Module ' + m.num + ' \u00b7 ' + m.tag + '</span>'
+        + '<div class="acb-module-title">' + m.title + '</div>'
+        + '<div class="acb-module-skill">' + m.skill + '</div>'
+        + '</div>'
+        + '<span class="acb-checkbox-wrap"><input type="checkbox" class="acb-checkbox" data-id="' + m.id + '" aria-label="Mark ' + m.title + ' as read"/><span class="acb-checkbox-label">read</span></span>'
+        + '</summary>'
+        + '<div class="acb-body">' + m.body + '</div>';
+      mainEl.appendChild(details);
+    });
+
+    navEl.addEventListener('click', function(e){
+      var btn = e.target.closest('.acb-nav-btn');
+      if(!btn) return;
+      var id = btn.getAttribute('data-target');
+      var details = document.getElementById('mod-' + id);
+      if(details){
+        details.open = true;
+        details.scrollIntoView({behavior: prefersReducedMotion() ? 'auto' : 'smooth', block:'start'});
+      }
+    });
+
+    mainEl.querySelectorAll('.acb-checkbox').forEach(function(cb){
+      cb.addEventListener('click', function(e){ e.stopPropagation(); });
+      cb.addEventListener('change', function(){
+        readState[cb.getAttribute('data-id')] = cb.checked;
+        renderReadProgress(view);
+        persistRead();
+      });
+    });
+
+    if(moduleObserver) moduleObserver.disconnect();
+    if(window.IntersectionObserver){
+      moduleObserver = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var id = entry.target.id.replace('mod-','');
+          var navItem = document.getElementById('nav-' + id);
+          if(!navItem) return;
+          if(entry.isIntersecting) navItem.classList.add('active');
+          else navItem.classList.remove('active');
+        });
+      }, {root: mainEl, rootMargin:'-20% 0px -70% 0px'});
+      mainEl.querySelectorAll('.acb-module').forEach(function(el){ moduleObserver.observe(el); });
+    }
+
+    var resetBtn = document.getElementById('acb-reset');
+    resetBtn.addEventListener('click', function(){
+      if(resetBtn.dataset.confirming === '1'){
+        list.forEach(function(m){ delete readState[m.id]; });
+        renderReadProgress(view);
+        persistRead();
+        resetBtn.textContent = 'Reset progress';
+        resetBtn.dataset.confirming = '0';
+      } else {
+        resetBtn.textContent = 'Click again to confirm';
+        resetBtn.dataset.confirming = '1';
+        setTimeout(function(){
+          resetBtn.textContent = 'Reset progress';
+          resetBtn.dataset.confirming = '0';
+        }, 3000);
+      }
+    });
+
+    renderReadProgress(view);
+  }
+
+  function renderReadProgress(view){
+    var list = modulesForView(view);
+    var ringFg = document.getElementById('acb-ring-fg');
+    var progressCount = document.getElementById('acb-progress-count');
+    if(!ringFg || !progressCount) return;
+    var doneCount = 0;
+    list.forEach(function(m){
+      var read = !!readState[m.id];
+      if(read) doneCount++;
+      var navItem = document.getElementById('nav-' + m.id);
+      if(navItem) navItem.classList.toggle('done', read);
+      var cb = mainEl.querySelector('.acb-checkbox[data-id="' + m.id + '"]');
+      if(cb) cb.checked = read;
+    });
+    var ringCirc = 103.7;
+    var pct = list.length ? doneCount / list.length : 0;
+    ringFg.setAttribute('stroke-dashoffset', String(ringCirc * (1 - pct)));
+    progressCount.textContent = doneCount + '/' + list.length;
+  }
+
+  async function persistRead(){
+    try{ await window.storage.set(READ_STORAGE_KEY, JSON.stringify(readState), false); }
+    catch(err){ console.error('Progress save failed:', err); }
+  }
+
+  async function hydrateRead(){
+    try{
+      var res = await window.storage.get(READ_STORAGE_KEY, false);
+      if(res && res.value) readState = JSON.parse(res.value);
+    }catch(err){ readState = {}; }
+  }
+
+  /* ---------- Quiz views ---------- */
+
+  function scoreQuiz(view){
+    var quiz = quizzes[view], st = quizState[view];
+    var correct = 0;
+    quiz.questions.forEach(function(q){
+      if(st.answers[q.id] === q.correct) correct++;
+    });
+    return correct;
+  }
+
+  function renderQuizSidebar(view){
+    var quiz = quizzes[view], st = quizState[view];
+    var answeredCount = Object.keys(st.answers).length;
+    var summaryHtml;
+    if(st.submitted){
+      var pct = st.score / quiz.questions.length;
+      var passed = pct >= quiz.passPct;
+      summaryHtml = '<div class="acb-quiz-summary"><b>' + st.score + '/' + quiz.questions.length + '</b> correct \u2014 '
+        + (passed ? '<b style="color:var(--edge)">PASS</b>' : '<b style="color:#B03D24">below 90%</b>') + '<br>Needs 14/15 (90%) to pass.</div>';
+    } else {
+      summaryHtml = '<div class="acb-quiz-summary"><b>' + answeredCount + '/' + quiz.questions.length + '</b> answered<br>Score 90%+ (14/15) to pass.</div>';
+    }
+
+    sideEl.innerHTML =
+      '<div><div class="acb-eyebrow">' + quiz.label + '</div><div class="acb-title">' + quiz.subtitle + '</div></div>'
+      + summaryHtml
+      + '<ul class="acb-qnav" id="acb-qnav"></ul>'
+      + '<button class="acb-reset" id="acb-quiz-reset">' + (st.submitted ? 'Retake quiz' : 'Clear answers') + '</button>';
+
+    var qnav = document.getElementById('acb-qnav');
+    quiz.questions.forEach(function(q, i){
+      var dotClass = 'acb-qnav-dot';
+      if(st.submitted){
+        dotClass += (st.answers[q.id] === q.correct) ? ' correct' : ' incorrect';
+      } else if(st.answers.hasOwnProperty(q.id)){
+        dotClass += ' answered';
+      }
+      var li = document.createElement('li');
+      li.className = 'acb-qnav-item';
+      li.innerHTML = '<button class="acb-qnav-btn" data-target="' + view + '-' + q.id + '"><span class="' + dotClass + '"></span>Q' + (i+1) + '</button>';
+      qnav.appendChild(li);
+    });
+
+    qnav.addEventListener('click', function(e){
+      var btn = e.target.closest('.acb-qnav-btn');
+      if(!btn) return;
+      var target = document.getElementById('card-' + btn.getAttribute('data-target'));
+      if(target) target.scrollIntoView({behavior: prefersReducedMotion() ? 'auto' : 'smooth', block:'start'});
+    });
+
+    var resetBtn = document.getElementById('acb-quiz-reset');
+    resetBtn.addEventListener('click', function(){
+      if(resetBtn.dataset.confirming === '1'){
+        quizState[view] = {answers:{}, submitted:false, score:0};
+        persistQuiz(view);
+        renderQuizView(view);
+      } else {
+        resetBtn.textContent = 'Click again to confirm';
+        resetBtn.dataset.confirming = '1';
+        setTimeout(function(){
+          if(resetBtn.dataset) { resetBtn.textContent = st.submitted ? 'Retake quiz' : 'Clear answers'; resetBtn.dataset.confirming = '0'; }
+        }, 3000);
+      }
+    });
+  }
+
+  function renderQuizMain(view){
+    var quiz = quizzes[view], st = quizState[view];
+    var html = '<div class="acb-quiz-intro"><h3>' + quiz.label + '</h3>'
+      + '<p>' + quiz.questions.length + ' single-select multiple choice questions covering ' + quiz.subtitle.split('\u2014')[1] + '.</p>'
+      + '<p>Minimum score to qualify: <b>90% (14 of 15 correct)</b>.</p></div>';
+
+    if(st.submitted){
+      var pct = st.score / quiz.questions.length;
+      var passed = pct >= quiz.passPct;
+      html += '<div class="acb-result-banner ' + (passed ? 'pass' : 'fail') + '">'
+        + '<span>' + (passed ? 'You qualified on this quiz.' : 'Below the 90% qualifying threshold \u2014 review and retake.') + '</span>'
+        + '<span class="acb-result-score">' + st.score + ' / ' + quiz.questions.length + ' (' + Math.round(pct*100) + '%)</span>'
+        + '</div>';
+    }
+
+    quiz.questions.forEach(function(q, i){
+      html += '<div class="acb-qcard" id="card-' + view + '-' + q.id + '">'
+        + '<div class="acb-qcard-num">Question ' + (i+1) + ' of ' + quiz.questions.length + '</div>'
+        + '<div class="acb-qcard-text">' + q.text + '</div>'
+        + '<div class="acb-qoptions">';
+      q.options.forEach(function(opt, oi){
+        var cls = 'acb-qoption';
+        var tag = '';
+        var checked = st.answers[q.id] === oi ? ' checked' : '';
+        if(st.submitted){
+          cls += ' disabled';
+          if(oi === q.correct){ cls += ' correct'; tag = '<span class="acb-qoption-tag">Correct</span>'; }
+          else if(st.answers[q.id] === oi){ cls += ' incorrect'; tag = '<span class="acb-qoption-tag">Your answer</span>'; }
+        }
+        html += '<label class="' + cls + '"><input type="radio" name="' + view + '_' + q.id + '" value="' + oi + '"' + checked + (st.submitted ? ' disabled' : '') + ' data-qid="' + q.id + '"/>' + opt + tag + '</label>';
+      });
+      html += '</div></div>';
+    });
+
+    if(!st.submitted){
+      var answeredAll = Object.keys(st.answers).length === quiz.questions.length;
+      html += '<div class="acb-qsubmit-row"><button class="acb-qsubmit" id="acb-qsubmit"' + (answeredAll ? '' : ' disabled') + '>Submit quiz</button>'
+        + '<div class="acb-qsubmit-hint">' + Object.keys(st.answers).length + ' of ' + quiz.questions.length + ' answered' + (answeredAll ? '' : ' \u2014 answer all questions to submit') + '</div></div>';
+    } else {
+      html += '<div class="acb-qsubmit-row"><button class="acb-qretake" id="acb-qretake-bottom">Retake quiz</button></div>';
+    }
+
+    mainEl.innerHTML = html;
+
+    mainEl.querySelectorAll('input[type=radio]').forEach(function(input){
+      input.addEventListener('change', function(){
+        st.answers[input.getAttribute('data-qid')] = parseInt(input.value, 10);
+        persistQuiz(view);
+        renderQuizSidebar(view);
+        var submitBtn = document.getElementById('acb-qsubmit');
+        var hint = mainEl.querySelector('.acb-qsubmit-hint');
+        var answeredAll = Object.keys(st.answers).length === quiz.questions.length;
+        if(submitBtn) submitBtn.disabled = !answeredAll;
+        if(hint) hint.textContent = Object.keys(st.answers).length + ' of ' + quiz.questions.length + ' answered' + (answeredAll ? '' : ' \u2014 answer all questions to submit');
+      });
+    });
+
+    var submitBtn = document.getElementById('acb-qsubmit');
+    if(submitBtn){
+      submitBtn.addEventListener('click', function(){
+        st.score = scoreQuiz(view);
+        st.submitted = true;
+        persistQuiz(view);
+        renderQuizView(view);
+      });
+    }
+    var retakeBottom = document.getElementById('acb-qretake-bottom');
+    if(retakeBottom){
+      retakeBottom.addEventListener('click', function(){
+        quizState[view] = {answers:{}, submitted:false, score:0};
+        persistQuiz(view);
+        renderQuizView(view);
+      });
+    }
+  }
+
+  function renderQuizView(view){
+    renderQuizSidebar(view);
+    renderQuizMain(view);
+  }
+
+  async function persistQuiz(view){
+    try{ await window.storage.set('ai-fluency-' + view + '-state', JSON.stringify(quizState[view]), false); }
+    catch(err){ console.error('Quiz save failed:', err); }
+  }
+
+  async function hydrateQuiz(view){
+    try{
+      var res = await window.storage.get('ai-fluency-' + view + '-state', false);
+      if(res && res.value) quizState[view] = JSON.parse(res.value);
+    }catch(err){ /* no saved state yet */ }
+  }
+
+  /* ---------- View switching ---------- */
+
+  function renderView(view){
+    currentView = view;
+    topLinksEl.querySelectorAll('.acb-toplink').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-view') === view);
+    });
+    if(view === 'quiz1' || view === 'quiz2'){
+      renderQuizView(view);
+    } else {
+      renderReadingView(view);
+    }
+  }
+
+  topLinksEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.acb-toplink');
+    if(!btn) return;
+    renderView(btn.getAttribute('data-view'));
+  });
+
+  (async function init(){
+    await hydrateRead();
+    await hydrateQuiz('quiz1');
+    await hydrateQuiz('quiz2');
+    renderView('part1');
+  })();
+})();
+</script>
