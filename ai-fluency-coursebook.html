@@ -197,17 +197,6 @@
 </style>
 
 <div class="acb-app">
-  <div class="acb-name-overlay" id="acb-name-overlay">
-    <div class="acb-name-card">
-      <h3>Join the leaderboard</h3>
-      <p>Enter your name so your progress and quiz scores sync to the shared leaderboard. You can skip this and just use the coursebook privately instead.</p>
-      <input type="text" class="acb-name-input" id="acb-name-input" placeholder="Your name" maxlength="60"/>
-      <div class="acb-name-row">
-        <button class="acb-name-start" id="acb-name-start">Start &amp; sync my progress</button>
-        <button class="acb-name-skip" id="acb-name-skip">Skip</button>
-      </div>
-    </div>
-  </div>
   <header class="acb-hero">
     <div class="acb-hero-content">
     <div class="acb-hero-eyebrow">AI Fluency Playbook</div>
@@ -930,8 +919,11 @@
   function wireSyncButtons(){
     var nameBtn = document.getElementById('acb-sync-name-btn');
     if(nameBtn) nameBtn.addEventListener('click', function(){
-      document.getElementById('acb-name-overlay').classList.remove('hidden');
-      document.getElementById('acb-name-input').focus();
+      var name = prompt('Enter your name to join the leaderboard:');
+      if(name && name.trim()){
+        setUsername(name.trim());
+        syncToLeaderboard();
+      }
     });
     var syncBtn = document.getElementById('acb-sync-now-btn');
     if(syncBtn) syncBtn.addEventListener('click', function(){ syncToLeaderboard(); });
@@ -1307,7 +1299,6 @@
     hydrateQuiz('quiz3');
     hydrateQuiz('quiz4');
     renderView('part1');
-    initNameCapture();
     syncToLeaderboard();
   })();
 })();
